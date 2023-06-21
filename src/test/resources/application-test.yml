@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: demo-sqs-test
+  profiles:
+    active: test
+
+aws:
+  access-key: accessKeyTest
+  secret-key: secretKeyTest
+  sqs:
+    endpoint: http://localhost:4566
+    queue-name: demo-sqs-queue
+  stack:
+    auto: false
+  region:
+    static: sa-east-1

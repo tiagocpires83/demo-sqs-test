@@ -1,0 +1,61 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+	id 'org.springframework.boot' version '2.7.12'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.6.21'
+}
+
+group = 'br.com'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	gradlePluginPortal()
+}
+
+ext {
+	set('testcontainersVersion', "1.18.3")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	implementation 'com.amazonaws:aws-java-sdk-sqs:1.12.472'
+	implementation 'software.amazon.awssdk:sqs:2.20.67'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
+	testImplementation 'org.testcontainers:testcontainers:1.17.6'
+	testImplementation 'org.testcontainers:localstack:1.17.6'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'software.amazon.awssdk:sqs:2.20.67'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
+	systemProperties(System.getProperties())
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+	}
+}
+
+tasks.withType(KotlinCompile) {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '1.8'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
